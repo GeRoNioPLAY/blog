@@ -2,6 +2,7 @@ from collections.abc import Sequence
 
 from sqlalchemy import select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import selectinload
 
 from app.models.post import Post
 from app.schemas.post import PostCreate
@@ -23,3 +24,9 @@ async def get_posts(db: AsyncSession) -> Sequence[Post]:
 
 async def get_post_by_id(db: AsyncSession, post_id: int) -> Post | None:
     return await db.get(Post, post_id)
+
+
+async def get_post_with_comments(db: AsyncSession, post_id: int) -> Post | None:
+    stmt = select(Post).options(selectinload(Post.comments)).where(Post.id == post_id)
+    result = await db.scalars(stmt)
+    return result.one_or_none()
