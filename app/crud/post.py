@@ -17,8 +17,8 @@ async def create_post(db: AsyncSession, post_in: PostCreate) -> Post:
 
 
 async def get_posts(db: AsyncSession) -> Sequence[Post]:
-    result = await db.execute(select(Post))
-    return result.scalars().all()
+    result = await db.scalars(select(Post))
+    return result.all()
 
 
 async def get_post_by_id(db: AsyncSession, post_id: int) -> Post | None:
