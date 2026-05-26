@@ -5,7 +5,7 @@ class Settings(BaseSettings):
     PROJECT_NAME: str
     DATABASE_URL: str
 
-    model_config = SettingsConfigDict(env_file=",env")
+    model_config = SettingsConfigDict(env_file=".env")
 
 
 settings = Settings()
