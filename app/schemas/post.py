@@ -1,10 +1,8 @@
 from datetime import datetime
-from typing import TYPE_CHECKING
 
 from pydantic import BaseModel, ConfigDict
 
-if TYPE_CHECKING:
-    from .comment import CommentRead
+from .comment import CommentRead
 
 
 class PostCreate(BaseModel):
