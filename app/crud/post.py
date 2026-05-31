@@ -8,7 +8,7 @@ from app.models.post import Post
 from app.schemas.post import PostCreate
 
 
-async def create_post(db: AsyncSession, post_in: PostCreate) -> Post:
+async def create_post(post_in: PostCreate, db: AsyncSession) -> Post:
     db_post = Post(**post_in.model_dump())
     db.add(db_post)
     await db.commit()
@@ -22,11 +22,11 @@ async def get_posts(db: AsyncSession) -> Sequence[Post]:
     return result.all()
 
 
-async def get_post_by_id(db: AsyncSession, post_id: int) -> Post | None:
+async def get_post_by_id(post_id: int, db: AsyncSession) -> Post | None:
     return await db.get(Post, post_id)
 
 
-async def get_post_with_comments(db: AsyncSession, post_id: int) -> Post | None:
+async def get_post_with_comments(post_id: int, db: AsyncSession) -> Post | None:
     stmt = select(Post).options(selectinload(Post.comments)).where(Post.id == post_id)
     result = await db.scalars(stmt)
     return result.one_or_none()

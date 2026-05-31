@@ -1,5 +1,4 @@
-from app.core.database import Base
-
+from .base import Base
 from .comment import Comment
 from .post import Post
 
