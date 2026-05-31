@@ -9,7 +9,7 @@ from app.crud import post as crud_post
 from app.models.comment import Comment
 from app.schemas.comment import CommentCreate, CommentRead
 
-router = APIRouter(prefix="/posts", tags=["Posts"])
+router = APIRouter()
 
 SessionDep = Annotated[AsyncSession, Depends(get_db)]
 
@@ -18,8 +18,8 @@ SessionDep = Annotated[AsyncSession, Depends(get_db)]
 async def create_comment(
     db: SessionDep, comment_in: CommentCreate, post_id: int
 ) -> Comment:
-    result = await crud_post.get_post_by_id(db, post_id)
+    result = await crud_post.get_post_by_id(post_id, db)
     if result is None:
         raise HTTPException(status_code=404, detail="Post not found")
 
-    return await crud_comment.create_comment(db, comment_in, post_id)
+    return await crud_comment.create_comment(comment_in, post_id, db)
