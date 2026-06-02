@@ -1,9 +1,6 @@
-from typing import Annotated
+from fastapi import APIRouter, HTTPException
 
-from fastapi import APIRouter, Depends, HTTPException
-from sqlalchemy.ext.asyncio import AsyncSession
-
-from app.core.database import get_db
+from app.core.deps import SessionDep
 from app.crud import comment as crud_comment
 from app.crud import post as crud_post
 from app.models.comment import Comment
@@ -11,12 +8,10 @@ from app.schemas.comment import CommentCreate, CommentRead
 
 router = APIRouter()
 
-SessionDep = Annotated[AsyncSession, Depends(get_db)]
-
 
 @router.post("/{post_id}/comments", response_model=CommentRead, status_code=201)
 async def create_comment(
-    db: SessionDep, comment_in: CommentCreate, post_id: int
+    post_id: int, comment_in: CommentCreate, db: SessionDep
 ) -> Comment:
     result = await crud_post.get_post_by_id(post_id, db)
     if result is None:
