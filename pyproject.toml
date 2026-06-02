@@ -1,7 +1,7 @@
 [project]
 name = "blog"
 version = "0.1.0"
-description = "Add your description here"
+description = "Простой Blog API"
 readme = "README.md"
 requires-python = ">=3.13"
 dependencies = [
@@ -30,12 +30,12 @@ indent-width = 4
 
 target-version = "py313"
 
-exclude = [
-    "alembic",
-]
+# exclude = [
+#     "alembic",
+# ]
 
 [tool.ruff.lint]
-select = ["E", "F", "I", "B", "UP", "N", "SIM"]
+select = ["E", "F", "I", "B", "UP", "N", "SIM", "ASYNC", "RUF"]
 
 ignore = ["E501"]
 
