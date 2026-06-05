@@ -21,7 +21,7 @@ async def create_post(post_in: PostCreate, db: SessionDep) -> Post:
 
 
 @router.get("/{post_id}", response_model=PostWithCommentsRead)
-async def get_post_by_id(post_id: int, db: SessionDep) -> Post | None:
+async def get_post_by_id(post_id: int, db: SessionDep) -> Post:
     result = await crud_post.get_post_with_comments(post_id, db)
     if result is None:
         raise HTTPException(status_code=404, detail="Post not found")
