@@ -10,12 +10,12 @@ from app.schemas.post import PostCreate, PostRead, PostWithCommentsRead
 router = APIRouter()
 
 
-@router.get("/", response_model=Sequence[PostRead])
+@router.get("", response_model=Sequence[PostRead])
 async def get_posts(db: SessionDep) -> Sequence[Post]:
     return await crud_post.get_posts(db)
 
 
-@router.post("/", response_model=PostRead, status_code=201)
+@router.post("", response_model=PostRead, status_code=201)
 async def create_post(post_in: PostCreate, db: SessionDep) -> Post:
     return await crud_post.create_post(post_in, db)
 

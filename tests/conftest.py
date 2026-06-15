@@ -2,12 +2,17 @@ from collections.abc import AsyncGenerator
 
 import pytest
 from httpx import ASGITransport, AsyncClient
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
+from sqlalchemy.ext.asyncio import (
+    AsyncConnection,
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
 
 from app.core.config import settings
 from app.core.database import get_db
 from app.main import app
-from app.models import Base
+from app.models import Base, Post
 
 test_engine = create_async_engine(settings.TEST_DATABASE_URL, echo=False)
 TestingSessionLocal = async_sessionmaker(
@@ -22,14 +27,27 @@ async def init_db() -> None:
         await conn.run_sync(Base.metadata.create_all)
 
 
+@pytest.fixture(scope="session")
+async def db_connection() -> AsyncGenerator[AsyncConnection]:
+    async with test_engine.connect() as connection:
+        yield connection
+
+
 @pytest.fixture(scope="function")
-async def db_session() -> AsyncGenerator[AsyncSession]:
-    async with TestingSessionLocal() as session:
-        try:
-            yield session
-        finally:
-            await session.rollback()
-            await session.close()
+async def db_session(db_connection: AsyncConnection) -> AsyncGenerator[AsyncSession]:
+    transaction = await db_connection.begin()
+
+    async_session = AsyncSession(
+        bind=db_connection,
+        expire_on_commit=False,
+        join_transaction_mode="create_savepoint",
+    )
+
+    try:
+        yield async_session
+    finally:
+        await transaction.rollback()
+        await async_session.close()
 
 
 @pytest.fixture(scope="function")
@@ -44,3 +62,12 @@ async def client(db_session: AsyncSession) -> AsyncGenerator[AsyncClient]:
         yield async_client
 
     app.dependency_overrides.clear()
+
+
+@pytest.fixture(scope="function")
+async def test_post(db_session: AsyncSession) -> Post:
+    post = Post(title="Существующий пост", content="Текст существующего поста")
+    db_session.add(post)
+    await db_session.commit()
+    await db_session.refresh(post)
+    return post
