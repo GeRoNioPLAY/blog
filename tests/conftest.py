@@ -24,7 +24,7 @@ async def init_db() -> None:
 
 
 @pytest.fixture(scope="session")
-async def db_connection(_init_db: None) -> AsyncGenerator[AsyncConnection]:
+async def db_connection(init_db: None) -> AsyncGenerator[AsyncConnection]:
     async with test_engine.connect() as connection:
         yield connection
 
