@@ -11,7 +11,7 @@ from sqlalchemy.ext.asyncio import (
 from app.core.config import settings
 from app.core.database import get_db
 from app.main import app
-from app.models import Base, Post
+from app.models import Base, Comment, Post
 
 test_engine = create_async_engine(settings.TEST_DATABASE_URL, echo=False)
 
@@ -68,3 +68,12 @@ async def test_post(db_session: AsyncSession) -> Post:
     await db_session.commit()
     await db_session.refresh(post)
     return post
+
+
+@pytest.fixture(scope="function")
+async def test_comment(db_session: AsyncSession, test_post: Post) -> Comment:
+    comment = Comment(text="Существующий комментарий", post_id=test_post.id)
+    db_session.add(comment)
+    await db_session.commit()
+    await db_session.refresh(comment)
+    return comment
