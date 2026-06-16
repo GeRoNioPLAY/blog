@@ -4,7 +4,7 @@ from app.models import Comment, Post
 
 
 async def test_get_posts_empty(client: AsyncClient) -> None:
-    response = await client.get("/posts")
+    response = await client.get("/api/posts")
     assert response.status_code == 200
     assert response.json() == []
 
@@ -15,7 +15,7 @@ async def test_create_post(client: AsyncClient) -> None:
         "content": "Текст нашего тестового поста",
     }
 
-    response = await client.post("/posts", json=post_data)
+    response = await client.post("/api/posts", json=post_data)
 
     assert response.status_code == 201
 
@@ -25,7 +25,7 @@ async def test_create_post(client: AsyncClient) -> None:
 
 
 async def test_get_posts_with_data(client: AsyncClient, test_post: Post) -> None:
-    response = await client.get("/posts")
+    response = await client.get("/api/posts")
     assert response.status_code == 200
 
     data = response.json()
@@ -35,7 +35,7 @@ async def test_get_posts_with_data(client: AsyncClient, test_post: Post) -> None
 
 
 async def test_get_post_not_found(client: AsyncClient) -> None:
-    response = await client.get("/posts/999")
+    response = await client.get("/api/posts/999")
     assert response.status_code == 404
 
     data = response.json()
@@ -45,7 +45,7 @@ async def test_get_post_not_found(client: AsyncClient) -> None:
 async def test_create_post_invalid_data(client: AsyncClient) -> None:
     post_data: dict[str, str] = {}
 
-    response = await client.post("/posts", json=post_data)
+    response = await client.post("/api/posts", json=post_data)
 
     assert response.status_code == 422
 
@@ -61,7 +61,7 @@ async def test_create_post_invalid_data(client: AsyncClient) -> None:
 async def test_get_posts_with_comments(
     client: AsyncClient, test_comment: Comment
 ) -> None:
-    response = await client.get(f"/posts/{test_comment.post_id}")
+    response = await client.get(f"/api/posts/{test_comment.post_id}")
 
     assert response.status_code == 200
 

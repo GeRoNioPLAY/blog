@@ -1,7 +1,5 @@
 fail_fast: false
 
-exclude: ^alembic/
-
 repos:
   - repo: https://github.com/pre-commit/pre-commit-hooks
     rev: v6.0.0
@@ -27,3 +25,13 @@ repos:
         language: system
         pass_filenames: false
         types: [python]
+
+  - repo: https://github.com/djlint/djLint
+    rev: v1.39.2
+    hooks:
+      - id: djlint-reformat-jinja
+        files: "\\.html"
+        types_or: ["html"]
+      - id: djlint-jinja
+        files: "\\.html"
+        types_or: ["html"]
