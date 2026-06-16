@@ -26,6 +26,15 @@ repos:
         pass_filenames: false
         types: [python]
 
+  - repo: local
+    hooks:
+      - id: pytest
+        name: pytest (local)
+        entry: uv run pytest -v -s
+        language: system
+        pass_filenames: false
+        types: [python]
+
   - repo: https://github.com/djlint/djLint
     rev: v1.39.2
     hooks:
