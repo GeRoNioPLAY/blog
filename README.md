@@ -19,8 +19,8 @@
 
 Хочу на основе этого проекта сделать:
 
-- Базовый fontend либо на Jinja2, либо Streamlit, либо React TS (вряд ли);
-- Тест с pytest;
-- Настроить pre-commit и task-runner;
-- CI/CD;
-- Возможно Docker.
+- [ ] Базовый fontend либо на Jinja2, либо Streamlit, либо React TS (вряд ли);
+- [X] Тест с pytest;
+- [X] Настроить pre-commit и task-runner;
+- [ ] CI/CD;
+- [ ] Возможно Docker.
