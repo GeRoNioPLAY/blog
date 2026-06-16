@@ -1,0 +1,17 @@
+services:
+  db:
+    image: postgres:18-alpine
+    container_name: container_name
+    restart: unless-stopped
+    environment:
+      - POSTGRES_USER=user
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=db_name
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql
+      - ./init-test-db.sql:/docker-entrypoint-initdb.d/init-test-db.sql
+
+volumes:
+  postgres_data:
