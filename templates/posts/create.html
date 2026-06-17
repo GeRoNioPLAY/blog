@@ -6,6 +6,11 @@
         <h1 class="text-3xl font-bold mb-6">Новый пост</h1>
         <div class="card bg-base-100 shadow-md">
             <div class="card-body">
+                {% if error %}
+                    <div class="alert alert-error mb-4">
+                        <span>{{ error }}</span>
+                    </div>
+                {% endif %}
                 <form method="post" action="{{ url_for('post_create_submit') }}">
                     <div class="form-control mb-4">
                         <label class="label">

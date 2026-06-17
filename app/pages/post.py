@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from pydantic import ValidationError
 
 from app.core.deps import SessionDep
 from app.core.templating import templates
@@ -22,13 +23,23 @@ async def post_create(request: Request) -> HTMLResponse:
     return templates.TemplateResponse(request, "posts/create.html", {})
 
 
-@router.post("/posts/create", response_class=HTMLResponse)
+@router.post("/posts/create", response_class=HTMLResponse, response_model=None)
 async def post_create_submit(
-    request: Request, db: SessionDep, title: str = Form(...), content: str = Form(...)
-) -> RedirectResponse:
-    post = await crud_post.create_post(PostCreate(title=title, content=content), db)
-    from fastapi.responses import RedirectResponse
-
+    request: Request,
+    db: SessionDep,
+    title: str = Form(default=""),
+    content: str = Form(default=""),
+) -> HTMLResponse | RedirectResponse:
+    try:
+        post_in = PostCreate(title=title, content=content)
+    except ValidationError:
+        return templates.TemplateResponse(
+            request,
+            "posts/create.html",
+            {"error": "Заголовок и содержание не могут быть пустыми"},
+            status_code=422,
+        )
+    post = await crud_post.create_post(post_in, db)
     return RedirectResponse(url=f"/posts/{post.id}", status_code=303)
 
 
