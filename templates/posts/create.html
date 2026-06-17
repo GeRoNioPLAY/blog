@@ -1,0 +1,38 @@
+{% extends "base.html" %}
+
+{% block title %}Новый пост{% endblock title %}
+{% block content %}
+    <div class="max-w-2xl mx-auto">
+        <h1 class="text-3xl font-bold mb-6">Новый пост</h1>
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <form method="post" action="{{ url_for('post_create_submit') }}">
+                    <div class="form-control mb-4">
+                        <label class="label">
+                            <span class="label-text">Заголовок</span>
+                        </label>
+                        <input type="text"
+                               name="title"
+                               class="input input-bordered w-full"
+                               placeholder="Введите заголовок..."
+                               required>
+                    </div>
+                    <div class="form-control mb-6">
+                        <label class="label">
+                            <span class="label-text">Содержание</span>
+                        </label>
+                        <textarea name="content"
+                                  class="textarea textarea-bordered w-full"
+                                  placeholder="Напишите что-нибудь..."
+                                  rows="8"
+                                  required></textarea>
+                    </div>
+                    <div class="flex gap-3 justify-end">
+                        <a href="/" class="btn btn-ghost">Отмена</a>
+                        <button type="submit" class="btn btn-primary">Опубликовать</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

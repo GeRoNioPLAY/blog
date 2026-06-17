@@ -1,11 +1,12 @@
 from fastapi import APIRouter, Form, HTTPException, Request
-from fastapi.responses import HTMLResponse
+from fastapi.responses import HTMLResponse, RedirectResponse
 
 from app.core.deps import SessionDep
 from app.core.templating import templates
 from app.crud import comment as crud_comment
 from app.crud import post as crud_post
 from app.schemas.comment import CommentCreate
+from app.schemas.post import PostCreate
 
 router = APIRouter()
 
@@ -14,6 +15,21 @@ router = APIRouter()
 async def post_list(request: Request, db: SessionDep) -> HTMLResponse:
     posts = await crud_post.get_posts(db)
     return templates.TemplateResponse(request, "posts/list.html", {"posts": posts})
+
+
+@router.get("/posts/create", response_class=HTMLResponse)
+async def post_create(request: Request) -> HTMLResponse:
+    return templates.TemplateResponse(request, "posts/create.html", {})
+
+
+@router.post("/posts/create", response_class=HTMLResponse)
+async def post_create_submit(
+    request: Request, db: SessionDep, title: str = Form(...), content: str = Form(...)
+) -> RedirectResponse:
+    post = await crud_post.create_post(PostCreate(title=title, content=content), db)
+    from fastapi.responses import RedirectResponse
+
+    return RedirectResponse(url=f"/posts/{post.id}", status_code=303)
 
 
 @router.get("/posts/{post_id}", response_class=HTMLResponse)
@@ -31,15 +47,8 @@ async def add_comment(
     post = await crud_post.get_post_by_id(post_id, db)
     if post is None:
         raise HTTPException(status_code=404, detail="Post not found")
-
     comment = await crud_comment.create_comment(CommentCreate(text=text), post_id, db)
     count = await crud_comment.get_comments_count(post_id, db)
-
     return templates.TemplateResponse(
-        request,
-        "partials/comment.html",
-        {
-            "comment": comment,
-            "comments_count": count,
-        },
+        request, "partials/comment.html", {"comment": comment, "comments_count": count}
     )
