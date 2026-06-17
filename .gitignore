@@ -11,3 +11,4 @@ wheels/
 .env
 docker-compose.yaml
 init-test-db.sql
+node_modules

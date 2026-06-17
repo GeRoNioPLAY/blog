@@ -1,0 +1,41 @@
+{% extends "base.html" %}
+
+{% block title %}{{ post.title }}{% endblock title %}
+{% block content %}
+    <div class="flex flex-col gap-6">
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <h1 class="text-3xl font-bold">{{ post.title }}</h1>
+                <p class="mt-4">{{ post.content }}</p>
+            </div>
+        </div>
+        <div class="flex flex-col gap-4">
+            <h2 class="text-2xl font-bold">Комментарии (<span id="comments-count">{{ post.comments|length }}</span>)</h2>
+            <div id="comments-list" class="flex flex-col gap-2">
+                {% for comment in post.comments %}
+                    <div class="card bg-base-100 shadow-sm">
+                        <div class="card-body py-3">
+                            <p>{{ comment.text }}</p>
+                        </div>
+                    </div>
+                {% else %}
+                    <div class="alert alert-info">Комментариев пока нет.</div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="card bg-base-100 shadow-md">
+            <div class="card-body">
+                <h3 class="text-xl font-bold">Добавить комментарий</h3>
+                <form hx-post="/posts/{{ post.id }}/comments"
+                      hx-target="#comments-list"
+                      hx-swap="beforeend">
+                    <textarea name="text"
+                              class="textarea textarea-bordered w-full mt-2"
+                              placeholder="Ваш комментарий..."
+                              rows="3"></textarea>
+                    <button type="submit" class="btn btn-primary mt-3">Отправить</button>
+                </form>
+            </div>
+        </div>
+    </div>
+{% endblock content %}

@@ -1,6 +1,6 @@
 [project]
 name = "blog"
-version = "0.1.3"
+version = "0.2.0"
 description = "Простой Blog API"
 readme = "README.md"
 requires-python = ">=3.13"
@@ -8,6 +8,7 @@ dependencies = [
     "alembic>=1.18.4",
     "asyncpg>=0.31.0",
     "fastapi[standard]>=0.136.3",
+    "jinja2>=3.1.6",
     "loguru>=0.7.3",
     "pydantic>=2.13.4",
     "pydantic-settings>=2.14.1",
@@ -16,6 +17,7 @@ dependencies = [
 
 [dependency-groups]
 dev = [
+    "djlint>=1.39.2",
     "httpx>=0.28.1",
     "mypy>=2.1.0",
     "pre-commit>=4.6.0",
@@ -53,6 +55,7 @@ exclude = ["alembic/"]
 
 [tool.taskipy.tasks]
 lint = "uv run ruff format . && uv run ruff check . --fix && uv run mypy ."
+jlint = "uv run djlint . --reformat && uv run djlint . --lint"
 
 [tool.pytest.ini_options]
 pythonpath = ["."]
@@ -60,3 +63,13 @@ testpaths = ["tests"]
 asyncio_mode = "auto"
 asyncio_default_fixture_loop_scope = "session"
 asyncio_default_test_loop_scope = "session"
+
+[tool.djlint]
+profile="jinja"
+
+max_line_length = 120
+use_gitignore = true
+format_css = true
+format_js = true
+blank_line_after_tag = "extends,include"
+ignore = "H030,H031"
