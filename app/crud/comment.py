@@ -1,3 +1,4 @@
+from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app.models.comment import Comment
@@ -13,3 +14,8 @@ async def create_comment(
     await db.refresh(db_comment)
 
     return db_comment
+
+
+async def get_comments_count(post_id: int, db: AsyncSession) -> int:
+    result = await db.execute(select(func.count()).where(Comment.post_id == post_id))
+    return result.scalar_one()
