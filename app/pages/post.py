@@ -1,5 +1,6 @@
 from fastapi import APIRouter, Form, HTTPException, Request
 from fastapi.responses import HTMLResponse, RedirectResponse
+from loguru import logger
 from pydantic import ValidationError
 
 from app.core.deps import SessionDep
@@ -33,6 +34,7 @@ async def post_create_submit(
     try:
         post_in = PostCreate(title=title, content=content)
     except ValidationError:
+        logger.warning("Post creation failed: empty fields")
         return templates.TemplateResponse(
             request,
             "posts/create.html",
@@ -40,6 +42,7 @@ async def post_create_submit(
             status_code=422,
         )
     post = await crud_post.create_post(post_in, db)
+    logger.info(f"Post created: id={post.id} title={post.title!r}")
     return RedirectResponse(url=f"/posts/{post.id}", status_code=303)
 
 
