@@ -9,7 +9,7 @@ from app.pages.post import router as pages_router
 setup_logging()
 
 app = FastAPI(
-    title=settings.PROJECT_NAME, description="Простой Blog API", version="0.2.1"
+    title=settings.PROJECT_NAME, description="Простой Blog API", version="0.3.0"
 )
 
 app.mount("/static", StaticFiles(directory="static"), name="static")

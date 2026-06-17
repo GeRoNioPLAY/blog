@@ -9,7 +9,5 @@ wheels/
 # Virtual environments
 .venv
 .env
-docker-compose.yaml
-init-test-db.sql
 node_modules
 *.log
